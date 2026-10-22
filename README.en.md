@@ -7,7 +7,7 @@
 - Uses captions when available; **transcribes with Groq Whisper when there are none**.
 - One Notion page per video: thumbnail, video info, one-line summary, key-points table, section-by-section notes, and a structure tree.
 - Reuses existing channel / tag / category options and adds new ones when needed.
-- Processed links are checked off (`- [x]`) in the inbox; failed videos are retried on the next run.
+- Processed links are checked off (`- [x]`) in the '작업 대기 영상(URL)' page; failed videos are retried on the next run.
 
 > Note: the skill instructions and the generated summaries are in **Korean**. To get summaries in another language, edit the "한국어로 작성" (write in Korean) line in `SKILL.md`.
 
@@ -23,7 +23,7 @@ I wanted a way to go beyond simply saving videos: a personal learning environmen
 
 To address this challenge, I built `youtube-to-notion`, a custom skill for Claude Code.
 
-I use Notion as a centralized inbox for YouTube URLs, making it easy to save videos on the go from my phone. When I run the `/youtube-to-notion` skill in Claude Code on my laptop, it automatically identifies unprocessed URLs, analyzes each video's subtitles (or a speech-to-text transcript when there are none) and visual content, and generates a structured summary in a new Notion page.
+I use Notion as a centralized video queue for YouTube URLs, making it easy to save videos on the go from my phone. When I run the `/youtube-to-notion` skill in Claude Code on my laptop, it automatically identifies unprocessed URLs, analyzes each video's subtitles (or a speech-to-text transcript when there are none) and visual content, and generates a structured summary in a new Notion page.
 
 This turns a simple collection of video links into an organized, searchable knowledge base.
 
@@ -39,12 +39,12 @@ The goal is to move beyond passive video consumption and build a personalized le
 ## How it works
 
 ```
-Notion inbox page (- [ ] YouTube link)
+Notion '작업 대기 영상(URL)' (video queue) page (- [ ] YouTube link)
   → /youtube-to-notion
   → watch skill (yt-dlp + ffmpeg): captions + metadata, Groq Whisper if no captions
   → write summary, pick channel / tags / category
   → new page in the Notion DB (sequence number +1)
-  → check off the line in the inbox
+  → check off the line in the '작업 대기 영상(URL)' page
 ```
 
 ## Requirements
@@ -79,12 +79,12 @@ Copy `skills/youtube-to-notion/SKILL.md` to `~/.claude/skills/youtube-to-notion/
 
 **Nothing to create in advance.** On the first `/youtube-to-notion` run, Claude asks:
 
-- **Don't have them yet** → it creates an **inbox page** and a **database** (properties below + a view sorted by sequence number) under a Notion page you choose.
+- **Don't have them yet** → it creates an **'작업 대기 영상(URL)' (video queue) page** and a **database** (properties below + a view sorted by sequence number) under a Notion page you choose.
 - **Already have them** → share both links; it connects them and adds any missing properties.
 
 Settings are saved to `~/.config/youtube-to-notion/config.json`, so it won't ask again.
 
-Then queue links on the inbox page as a checklist:
+Then queue links on the '작업 대기 영상(URL)' page as a checklist:
 
 ```
 - [ ] [Video title](https://youtu.be/...)
