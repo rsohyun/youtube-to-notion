@@ -23,7 +23,7 @@ I wanted a way to go beyond simply saving videos: a personal learning environmen
 
 To address this challenge, I built `youtube-to-notion`, a custom skill for Claude Code.
 
-I use Notion as a centralized inbox for YouTube URLs, making it easy to save videos on the go from my phone. When I run the `/youtube-to-notion` skill in Claude Code on my laptop, it automatically identifies unprocessed URLs, analyzes each video's subtitles and visual content, and generates a structured summary in a new Notion page.
+I use Notion as a centralized inbox for YouTube URLs, making it easy to save videos on the go from my phone. When I run the `/youtube-to-notion` skill in Claude Code on my laptop, it automatically identifies unprocessed URLs, analyzes each video's subtitles (or a speech-to-text transcript when there are none) and visual content, and generates a structured summary in a new Notion page.
 
 This turns a simple collection of video links into an organized, searchable knowledge base.
 
