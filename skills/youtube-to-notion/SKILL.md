@@ -19,7 +19,16 @@ user-invocable: true
 ```
 
 - 실행할 때마다 먼저 이 파일을 읽는다.
-- 파일이 없거나 값이 비어 있으면: 사용자에게 **받은편지함 Notion 페이지 링크**와 **정리용 데이터베이스 링크**를 묻는다 → 페이지 링크에서 32자리 ID를 뽑고, DB는 fetch해 `<data-source url="collection://...">` 값을 얻는다 → DB에 아래 "필요한 속성"이 있는지 확인하고, 없으면 `update-data-source`로 추가할지 사용자에게 물은 뒤 추가한다 → 파일을 저장하고 진행한다.
+- 파일이 없거나 값이 비어 있으면 **첫 실행 셋업**을 한다. 먼저 "이미 받은편지함 페이지와 정리용 DB가 있나요?"라고 묻는다.
+  - **있다** → 받은편지함 페이지 링크와 DB 링크를 받는다 → 페이지 링크에서 32자리 ID를 뽑고, DB는 fetch해 `<data-source url="collection://...">` 값을 얻는다 → DB에 아래 "필요한 속성"이 있는지 확인하고, 빠진 게 있으면 추가할지 물은 뒤 `update-data-source`의 `ADD COLUMN`으로 추가한다.
+  - **없다** → "어느 Notion 페이지 아래에 만들까요?"라고 부모 페이지 링크를 받는다 (없다고 하면 `create-pages`의 `creation_mode: "draft"`로 비공개 페이지 "YouTube 스터디"를 먼저 만들어 부모로 쓴다). 그 아래에 다음을 만든다:
+    1. **정리용 DB**: `create-database` (parent = 부모 페이지, title "유튜브 스터디"), schema:
+       `CREATE TABLE ("이름" TITLE, "순번" NUMBER, "영상 제목" RICH_TEXT, "채널" SELECT(), "설명" RICH_TEXT, "태그" MULTI_SELECT(), "기록날짜" DATE, "영상날짜" DATE, "스터디 분류" MULTI_SELECT('기초지식':default, '공부법':green, '최신APP':pink))`
+       → 결과의 `collection://...`가 `data_source`.
+    2. **정렬 보기**: DB를 fetch해 기본 보기(`view://...`)를 찾고 `update-view`로 `name: "전체"`, `configure: SORT BY "순번" ASC; SHOW "순번", "이름", "설명", "스터디 분류", "태그", "채널", "기록날짜", "영상날짜", "영상 제목"`.
+    3. **받은편지함 페이지**: `create-pages` (parent = 부모 페이지, icon 🗂️, title "작업 대기 영상(URL)"), 내용은 사용법 콜아웃 하나만 (예시 링크를 `- [ ]`로 넣지 말 것 — 그대로 처리 대상이 됨).
+    4. 만든 두 페이지 링크를 사용자에게 알려 주고, "받은편지함에 `- [ ] [제목](유튜브URL)` 형식으로 링크를 넣은 뒤 다시 실행하세요"라고 안내한다.
+  - 마지막으로 설정 파일을 저장한다.
 - `log_file`(선택): 실행 기록을 남길 md 파일 경로. 비어 있으면 실행 기록 단계를 건너뛴다.
 - 이하 본문의 `INBOX_PAGE_ID`, `DATA_SOURCE`, `LOG_FILE`은 이 파일의 값을 뜻한다.
 
@@ -42,7 +51,7 @@ user-invocable: true
 ## 절차
 
 1. **대기 목록 수집:** Notion fetch로 받은편지함 페이지를 읽고 `- [ ]` 항목의 유튜브 URL을 모은다. 없으면 "대기 영상 없음"을 보고하고 종료.
-2. **DB 스키마·순번 확인:** data source를 fetch해 현재 `채널`/`태그`/`스터디 분류` 옵션 목록을 확인하고, SQL로 `SELECT MAX("순번")`을 조회해 다음 순번(= 최댓값 + 1)을 정한다. 영상마다 1씩 늘린다.
+2. **DB 스키마·순번 확인:** data source를 fetch해 현재 `채널`/`태그`/`스터디 분류` 옵션 목록을 확인하고, SQL로 `SELECT COALESCE(MAX("순번"), 0)`을 조회해 (빈 DB면 0) 다음 순번(= 최댓값 + 1)을 정한다. 영상마다 1씩 늘린다.
 3. **영상마다 순서대로** (한 영상 실패해도 다음 영상 계속):
    1. **시청:** watch 스킬 절차대로 실행한다 (스크립트 경로: `~/.claude/plugins/cache/claude-video/watch/*/scripts/watch.py`, Windows는 `python`).
       - watch 스크립트가 없으면 중단하고 설치를 안내한다: `/plugin install watch --marketplace bradautomates/claude-video` (그 뒤 watch의 setup으로 yt-dlp·ffmpeg 준비).

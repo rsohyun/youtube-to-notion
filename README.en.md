@@ -77,29 +77,34 @@ Copy `skills/youtube-to-notion/SKILL.md` to `~/.claude/skills/youtube-to-notion/
 
 ## Notion setup
 
-**1) Inbox page** — any page with a checklist of links:
+**Nothing to create in advance.** On the first `/youtube-to-notion` run, Claude asks:
+
+- **Don't have them yet** → it creates an **inbox page** and a **database** (properties below + a view sorted by sequence number) under a Notion page you choose.
+- **Already have them** → share both links; it connects them and adds any missing properties.
+
+Settings are saved to `~/.config/youtube-to-notion/config.json`, so it won't ask again.
+
+Then queue links on the inbox page as a checklist:
 
 ```
 - [ ] [Video title](https://youtu.be/...)
 ```
 
-**2) Database** — create these properties (exact Korean names):
+<details>
+<summary>Database properties (reference — created automatically)</summary>
 
-| Property | Meaning | Type |
-|----------|---------|------|
-| 이름 | Name | Title |
-| 순번 | Sequence no. | Number |
-| 영상 제목 | Original video title | Text |
-| 채널 | Channel | Select |
-| 설명 | One-line description | Text |
-| 태그 | Tags | Multi-select |
-| 기록날짜 | Date recorded | Date |
-| 영상날짜 | Upload date | Date |
-| 스터디 분류 | Category | Multi-select |
-
-Sort the table view by **순번 ascending** so new pages appear at the bottom.
-
-**3) Configure** — nothing to edit. On the first run Claude asks for your inbox page and database links and saves them to `~/.config/youtube-to-notion/config.json`. If the database lacks the properties above, it offers to add them.
+| Property | Type | Meaning |
+|----------|------|---------|
+| 이름 | Title | Short topic name |
+| 순번 | Number | Auto-incrementing sequence (sort key) |
+| 영상 제목 | Text | Original video title |
+| 채널 | Select | YouTube channel |
+| 설명 | Text | One-line description |
+| 태그 | Multi-select | Tools / features / people in the video |
+| 기록날짜 | Date | Date recorded |
+| 영상날짜 | Date | Upload date |
+| 스터디 분류 | Multi-select | Category (new ones added as needed) |
+</details>
 
 ## Usage
 
