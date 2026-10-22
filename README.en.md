@@ -11,6 +11,31 @@
 
 > Note: the skill instructions and the generated summaries are in **Korean**. To get summaries in another language, edit the "한국어로 작성" (write in Korean) line in `SKILL.md`.
 
+## 💡 Background
+
+In today's fast-paced IT landscape, new services, applications, plugins, skills, and methodologies emerge constantly. To keep up with these changes, I often watch IT-related YouTube videos during my daily commute.
+
+While the information feels fresh and useful at the time, I often find myself forgetting the details just a few days later — sometimes even the names of the tools or services I wanted to try. Although YouTube's Watch Later playlist and other bookmarking features make it easy to save videos, revisiting them and reviewing what I've learned can be challenging.
+
+I wanted a way to go beyond simply saving videos: a personal learning environment where I could organize key takeaways and revisit them whenever needed.
+
+## 🎯 The Solution
+
+To address this challenge, I built `youtube-to-notion`, a custom skill for Claude Code.
+
+I use Notion as a centralized inbox for YouTube URLs, making it easy to save videos on the go from my phone. When I run the `/youtube-to-notion` skill in Claude Code on my laptop, it automatically identifies unprocessed URLs, analyzes each video's subtitles and visual content, and generates a structured summary in a new Notion page.
+
+This turns a simple collection of video links into an organized, searchable knowledge base.
+
+## 🚀 Benefits
+
+- **Organized Learning Materials**: Keep YouTube videos and their key takeaways organized in one place.
+- **Continuous Learning**: Revisit important concepts, practical tips, and tool usage instructions whenever needed.
+- **Automated Note-Taking**: Reduce the time and effort required to summarize videos and create notes manually.
+- **Long-Term Knowledge Building**: Gradually build a personal knowledge base of IT trends, tools, and techniques.
+
+The goal is to move beyond passive video consumption and build a personalized learning workflow that helps me capture, retain, and reuse valuable knowledge over time.
+
 ## How it works
 
 ```
