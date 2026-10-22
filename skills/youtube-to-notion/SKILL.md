@@ -6,15 +6,24 @@ user-invocable: true
 
 # YouTube → Notion 스터디 정리
 
-## 설정 (처음 한 번 본인 값으로 바꾸기)
+## 설정 (첫 실행 때 한 번)
 
-| 키 | 값 | 설명 |
-|----|----|------|
-| `INBOX_PAGE_ID` | `<받은편지함 페이지 ID>` | 유튜브 링크를 체크리스트로 쌓아 두는 Notion 페이지 |
-| `DATA_SOURCE` | `collection://<데이터 소스 ID>` | 정리 결과를 넣을 Notion 데이터베이스의 data source (DB를 fetch하면 `<data-source url=...>`에 나옴) |
-| `LOG_FILE` | (선택) `<실행 기록 md 경로>` | 비워 두면 실행 기록 단계를 건너뛴다 |
+설정은 `~/.config/youtube-to-notion/config.json`에 저장한다 (플러그인 파일은 업데이트 때 덮어써지므로 여기에 두지 않는다).
 
-값이 아직 `<...>` 그대로면 실행하지 말고, 사용자에게 받은편지함 페이지와 DB 링크를 물어 이 표를 채운 뒤 진행한다.
+```json
+{
+  "inbox_page_id": "<받은편지함 페이지 ID>",
+  "data_source": "collection://<데이터 소스 ID>",
+  "log_file": ""
+}
+```
+
+- 실행할 때마다 먼저 이 파일을 읽는다.
+- 파일이 없거나 값이 비어 있으면: 사용자에게 **받은편지함 Notion 페이지 링크**와 **정리용 데이터베이스 링크**를 묻는다 → 페이지 링크에서 32자리 ID를 뽑고, DB는 fetch해 `<data-source url="collection://...">` 값을 얻는다 → DB에 아래 "필요한 속성"이 있는지 확인하고, 없으면 `update-data-source`로 추가할지 사용자에게 물은 뒤 추가한다 → 파일을 저장하고 진행한다.
+- `log_file`(선택): 실행 기록을 남길 md 파일 경로. 비어 있으면 실행 기록 단계를 건너뛴다.
+- 이하 본문의 `INBOX_PAGE_ID`, `DATA_SOURCE`, `LOG_FILE`은 이 파일의 값을 뜻한다.
+
+**필요한 속성:** `이름`(title), `순번`(number), `영상 제목`(text), `채널`(select), `설명`(text), `태그`(multi_select), `기록날짜`(date), `영상날짜`(date), `스터디 분류`(multi_select)
 
 ## 고정 대상
 
@@ -29,6 +38,7 @@ user-invocable: true
 2. **DB 스키마·순번 확인:** data source를 fetch해 현재 `채널`/`태그`/`스터디 분류` 옵션 목록을 확인하고, SQL로 `SELECT MAX("순번")`을 조회해 다음 순번(= 최댓값 + 1)을 정한다. 영상마다 1씩 늘린다.
 3. **영상마다 순서대로** (한 영상 실패해도 다음 영상 계속):
    1. **시청:** watch 스킬 절차대로 실행한다 (스크립트 경로: `~/.claude/plugins/cache/claude-video/watch/*/scripts/watch.py`, Windows는 `python`).
+      - watch 스크립트가 없으면 중단하고 설치를 안내한다: `/plugin install watch --marketplace bradautomates/claude-video` (그 뒤 watch의 setup으로 yt-dlp·ffmpeg 준비).
       - Windows에서 `yt-dlp`/`ffmpeg`를 못 찾으면 사용자 PATH를 현재 셸에 반영: `export PATH="$PATH:$(cygpath -p "$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('Path','User')" | tr -d '\r')")"`
       - 출력 한글이 깨지면 `PYTHONIOENCODING=utf-8 yt-dlp --encoding utf-8 ...`
       - 자막이 없으면 watch가 **Groq Whisper**로 자동 받아쓰기한다 (키: `~/.config/watch/.env`의 `GROQ_API_KEY`). 프레임은 거의 필요 없으므로 `--max-frames 6`으로 실행하고 리포트를 파일로 저장해 `## Transcript` 부분만 읽는다. 키가 비어 있을 때만 `--no-whisper`(화면만으로 정리).

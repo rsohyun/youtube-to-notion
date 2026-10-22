@@ -34,11 +34,21 @@ Notion inbox page (- [ ] YouTube link)
 
 ## Install
 
-1. **Install the watch skill** following [claude-video](https://github.com/bradautomates/claude-video), and run its setup to get yt-dlp and ffmpeg.
-2. **Add this skill**: copy `SKILL.md` to one of:
-   - one project only: `<project>/.claude/skills/youtube-to-notion/SKILL.md`
-   - everywhere: `~/.claude/skills/youtube-to-notion/SKILL.md`
-3. **(Optional) Groq key**: create one at [console.groq.com/keys](https://console.groq.com/keys) and put it after `GROQ_API_KEY=` in `~/.config/watch/.env`. **Never paste the key into chat or commit it.**
+Two lines in Claude Code (Claude Code 2.1.275 or later):
+
+```
+/plugin install watch --marketplace bradautomates/claude-video
+/plugin install youtube-to-notion --marketplace rsohyun/youtube-to-notion
+```
+
+- The first line installs the required [watch skill](https://github.com/bradautomates/claude-video). Follow its setup to get yt-dlp and ffmpeg.
+- **(Optional) Groq key** for videos without captions: create one at [console.groq.com/keys](https://console.groq.com/keys) and put it after `GROQ_API_KEY=` in `~/.config/watch/.env`. **Never paste the key into chat or commit it.**
+
+<details>
+<summary>Manual install (without plugins)</summary>
+
+Copy `skills/youtube-to-notion/SKILL.md` to `~/.claude/skills/youtube-to-notion/SKILL.md` (everywhere) or `<project>/.claude/skills/youtube-to-notion/SKILL.md` (one project).
+</details>
 
 ## Notion setup
 
@@ -64,7 +74,7 @@ Notion inbox page (- [ ] YouTube link)
 
 Sort the table view by **순번 ascending** so new pages appear at the bottom.
 
-**3) Configure** — replace `INBOX_PAGE_ID` and `DATA_SOURCE` in the **설정 (Settings)** table at the top of `SKILL.md`. If left blank, Claude will ask you for the links.
+**3) Configure** — nothing to edit. On the first run Claude asks for your inbox page and database links and saves them to `~/.config/youtube-to-notion/config.json`. If the database lacks the properties above, it offers to add them.
 
 ## Usage
 
@@ -74,7 +84,7 @@ In Claude Code:
 /youtube-to-notion
 ```
 
-You get a list of successes / failures with links to the new pages.
+(It may appear as `/youtube-to-notion:youtube-to-notion` when installed as a plugin.) You get a list of successes / failures with links to the new pages.
 
 ## Notes
 

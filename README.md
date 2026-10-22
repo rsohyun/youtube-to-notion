@@ -32,11 +32,21 @@ Notion 받은편지함 (- [ ] 유튜브 링크)
 
 ## 설치
 
-1. **watch 스킬 설치**: [claude-video](https://github.com/bradautomates/claude-video) 안내에 따라 설치하고, 셋업 스크립트로 yt-dlp·ffmpeg를 준비합니다.
-2. **이 스킬 넣기**: `SKILL.md`를 아래 둘 중 한 곳에 복사합니다.
-   - 특정 프로젝트에서만: `<프로젝트>/.claude/skills/youtube-to-notion/SKILL.md`
-   - 어디서나: `~/.claude/skills/youtube-to-notion/SKILL.md`
-3. **(선택) Groq 키**: [console.groq.com/keys](https://console.groq.com/keys)에서 키를 만들어 `~/.config/watch/.env`의 `GROQ_API_KEY=` 뒤에 붙여 넣습니다. **키를 대화창이나 저장소에 올리지 마세요.**
+Claude Code에서 두 줄이면 됩니다 (Claude Code 2.1.275 이상).
+
+```
+/plugin install watch --marketplace bradautomates/claude-video
+/plugin install youtube-to-notion --marketplace rsohyun/youtube-to-notion
+```
+
+- 첫 줄은 필수 의존성인 [watch 스킬](https://github.com/bradautomates/claude-video)입니다. 설치 후 watch 안내에 따라 yt-dlp·ffmpeg를 준비하세요.
+- **(선택) Groq 키**: 자막 없는 영상용. [console.groq.com/keys](https://console.groq.com/keys)에서 키를 만들어 `~/.config/watch/.env`의 `GROQ_API_KEY=` 뒤에 붙여 넣습니다. **키를 대화창이나 저장소에 올리지 마세요.**
+
+<details>
+<summary>플러그인 없이 수동 설치</summary>
+
+`skills/youtube-to-notion/SKILL.md`를 `~/.claude/skills/youtube-to-notion/SKILL.md`(어디서나) 또는 `<프로젝트>/.claude/skills/youtube-to-notion/SKILL.md`(그 프로젝트에서만)에 복사합니다.
+</details>
 
 ## Notion 준비
 
@@ -62,7 +72,7 @@ Notion 받은편지함 (- [ ] 유튜브 링크)
 
 표 보기를 **순번 오름차순**으로 정렬하면 새 페이지가 맨 아래에 쌓입니다.
 
-**3) 설정 채우기**: `SKILL.md` 맨 위 **설정** 표의 `INBOX_PAGE_ID`, `DATA_SOURCE`를 본인 값으로 바꿉니다. 비워 둔 채 실행하면 Claude가 링크를 물어봅니다.
+**3) 설정**: 따로 할 일 없습니다. 처음 실행하면 Claude가 받은편지함 페이지와 데이터베이스 링크를 물어보고 `~/.config/youtube-to-notion/config.json`에 저장합니다. 데이터베이스에 위 속성이 없으면 만들어 줄지 물어봅니다.
 
 ## 사용법
 
@@ -72,7 +82,7 @@ Claude Code에서:
 /youtube-to-notion
 ```
 
-또는 "대기 영상 정리해줘". 끝나면 성공·실패 목록과 새 페이지 링크를 알려 줍니다.
+(플러그인으로 설치하면 `/youtube-to-notion:youtube-to-notion`으로 보일 수 있습니다) 또는 "대기 영상 정리해줘". 끝나면 성공·실패 목록과 새 페이지 링크를 알려 줍니다.
 
 ## 참고와 주의
 

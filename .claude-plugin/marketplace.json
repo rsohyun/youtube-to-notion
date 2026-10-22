@@ -1,0 +1,21 @@
+{
+  "name": "youtube-to-notion",
+  "owner": {
+    "name": "rsohyun"
+  },
+  "metadata": {
+    "description": "Queue YouTube links on a Notion page, run one command, get study notes in a Notion database."
+  },
+  "plugins": [
+    {
+      "name": "youtube-to-notion",
+      "description": "Summarize queued YouTube videos into a Notion database (captions or Groq Whisper). Requires the watch plugin.",
+      "author": {
+        "name": "rsohyun"
+      },
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/rsohyun/youtube-to-notion"
+    }
+  ]
+}
