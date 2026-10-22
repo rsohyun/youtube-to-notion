@@ -36,6 +36,31 @@ This turns a simple collection of video links into an organized, searchable know
 
 The goal is to move beyond passive video consumption and build a personalized learning workflow that helps me capture, retain, and reuse valuable knowledge over time.
 
+## 📸 Example
+
+**① Queue video links** — On the go, paste links into the Notion '작업 대기 영상(URL)' (video queue) page from your phone. Unchecked items are the ones to process.
+
+<img src="docs/images/01-queue.png" width="520" alt="Video queue page">
+
+**② Run one command on your laptop** — Type `/youtube-to-notion` in Claude Code. It fetches captions (or a speech-to-text transcript), checks just the relevant frames when a tool or person name is unclear, then summarizes.
+
+<img src="docs/images/02-run.png" width="620" alt="Claude Code run">
+
+**③ Organized in the database** — A new row with sequence number, description, category and tags is added at the bottom, and the processed link is checked off.
+
+<img src="docs/images/03-db-row.png" alt="New database row">
+<img src="docs/images/04-checked.png" width="520" alt="Checked-off link">
+
+**④ Result page** — Video info, one-line summary, key-points table, section notes and a structure tree on one page.
+
+<details>
+<summary>Result page preview (click)</summary>
+
+<img src="docs/images/05-result-page.png" width="600" alt="Generated Notion page">
+</details>
+
+> Screenshots are from the Korean setup.
+
 ## How it works
 
 ```

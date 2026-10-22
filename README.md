@@ -30,6 +30,29 @@
 
 이를 통해 단순히 영상을 시청하는 데 그치지 않고, 유용한 정보를 지속적으로 축적하고 활용할 수 있는 개인화된 학습 워크플로우를 구축하고자 했습니다.
 
+## 📸 사용 예시
+
+**① 영상 링크 쌓아 두기** — 출퇴근길에 휴대폰으로 Notion '작업 대기 영상(URL)' 페이지에 링크를 붙여 넣습니다. 체크가 안 된 항목이 처리 대상입니다.
+
+<img src="docs/images/01-queue.png" width="520" alt="작업 대기 영상(URL) 페이지">
+
+**② 노트북에서 한 줄 실행** — Claude Code에서 `/youtube-to-notion`을 입력하면 자막(없으면 음성 받아쓰기)을 받고, 도구·인물 이름이 애매하면 해당 장면만 캡처해 확인한 뒤 요약합니다.
+
+<img src="docs/images/02-run.png" width="620" alt="Claude Code 실행 화면">
+
+**③ 데이터베이스에 정리 완료** — 순번·설명·분류·태그가 채워진 새 행이 맨 아래에 쌓이고, 처리한 링크는 자동으로 체크됩니다.
+
+<img src="docs/images/03-db-row.png" alt="데이터베이스에 추가된 행">
+<img src="docs/images/04-checked.png" width="520" alt="자동 체크된 링크">
+
+**④ 결과 페이지** — 영상 정보, 한 줄 요약, 핵심 요약 표, 흐름별 정리, 전체 구조 트리까지 한 페이지에 정리됩니다.
+
+<details>
+<summary>결과 페이지 미리보기 (클릭)</summary>
+
+<img src="docs/images/05-result-page.png" width="600" alt="정리된 Notion 페이지">
+</details>
+
 ## 동작 흐름
 
 ```
