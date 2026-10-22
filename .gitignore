@@ -1,0 +1,12 @@
+# Secrets and local settings (real settings live in ~/.config/, never in this repo)
+.env
+.env.*
+config.json
+
+# Media and temp files from trying the skill locally
+*.mp4
+*.webm
+*.mp3
+*.vtt
+tmp/
+*.log
