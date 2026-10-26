@@ -19,7 +19,17 @@ user-invocable: true
 ```
 
 - 실행할 때마다 먼저 이 파일을 읽는다.
-- 파일이 없거나 값이 비어 있으면 **첫 실행 셋업**을 한다. 먼저 "이미 '작업 대기 영상(URL)' 페이지와 정리용 DB가 있나요?"라고 묻는다.
+- 파일이 없거나 값이 비어 있으면 **첫 실행 셋업**을 한다.
+- **셋업 0단계 — 사전 점검** (하나라도 빠지면 무엇이 없는지와 해결 방법을 알려 주고, 필수 항목이 해결될 때까지 진행하지 않는다):
+
+  | 항목 | 확인 방법 | 없을 때 안내 |
+  |------|-----------|--------------|
+  | Notion 커넥터 (필수) | Notion 도구(`fetch`, `create-pages` 등)가 보이는지 | Claude 앱 설정 → 커넥터에서 Notion 연결 후 다시 실행 |
+  | watch 스킬 (필수) | `~/.claude/plugins/cache/claude-video/watch/*/scripts/watch.py` 존재 | `/plugin install watch --marketplace bradautomates/claude-video` |
+  | yt-dlp·ffmpeg (필수) | `yt-dlp --version`, `ffmpeg -version` | watch의 셋업 실행: `python <watch 경로>/scripts/setup.py` (Windows는 `winget install yt-dlp.yt-dlp`, `winget install Gyan.FFmpeg` 후 Claude Code 재시작) |
+  | Groq API 키 (선택) | `~/.config/watch/.env`의 `GROQ_API_KEY=` 값이 비었는지 (값 자체는 출력하지 말 것) | "자막 없는 영상은 화면만으로 정리됩니다. 원하면 console.groq.com/keys에서 키를 만들어 위 파일에 직접 넣으세요 (대화창에 붙여넣지 말 것)" — 없어도 계속 진행 |
+
+- **셋업 1단계 — Notion 연결.** 먼저 "이미 '작업 대기 영상(URL)' 페이지와 정리용 DB가 있나요?"라고 묻는다.
   - **있다** → '작업 대기 영상(URL)' 페이지 링크와 DB 링크를 받는다 → 페이지 링크에서 32자리 ID를 뽑고, DB는 fetch해 `<data-source url="collection://...">` 값을 얻는다 → DB에 아래 "필요한 속성"이 있는지 확인하고, 빠진 게 있으면 추가할지 물은 뒤 `update-data-source`의 `ADD COLUMN`으로 추가한다.
   - **없다** → "어느 Notion 페이지 아래에 만들까요?"라고 부모 페이지 링크를 받는다 (없다고 하면 `create-pages`의 `creation_mode: "draft"`로 비공개 페이지 "YouTube 스터디"를 먼저 만들어 부모로 쓴다). 그 아래에 다음을 만든다:
     1. **정리용 DB**: `create-database` (parent = 부모 페이지, title "유튜브 스터디"), schema:
@@ -54,7 +64,7 @@ user-invocable: true
 2. **DB 스키마·순번 확인:** data source를 fetch해 현재 `채널`/`태그`/`스터디 분류` 옵션 목록을 확인하고, SQL로 `SELECT COALESCE(MAX("순번"), 0)`을 조회해 (빈 DB면 0) 다음 순번(= 최댓값 + 1)을 정한다. 영상마다 1씩 늘린다.
 3. **영상마다 순서대로** (한 영상 실패해도 다음 영상 계속):
    1. **시청:** watch 스킬 절차대로 실행한다 (스크립트 경로: `~/.claude/plugins/cache/claude-video/watch/*/scripts/watch.py`, Windows는 `python`).
-      - watch 스크립트가 없으면 중단하고 설치를 안내한다: `/plugin install watch --marketplace bradautomates/claude-video` (그 뒤 watch의 setup으로 yt-dlp·ffmpeg 준비).
+      - watch 스크립트나 yt-dlp·ffmpeg가 없으면 중단하고 셋업 0단계 표의 안내를 따른다.
       - Windows에서 `yt-dlp`/`ffmpeg`를 못 찾으면 사용자 PATH를 현재 셸에 반영: `export PATH="$PATH:$(cygpath -p "$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('Path','User')" | tr -d '\r')")"`
       - 출력 한글이 깨지면 `PYTHONIOENCODING=utf-8 yt-dlp --encoding utf-8 ...`
       - 자막이 없으면 watch가 **Groq Whisper**로 자동 받아쓰기한다 (키: `~/.config/watch/.env`의 `GROQ_API_KEY`). 프레임은 거의 필요 없으므로 `--max-frames 6`으로 실행하고 리포트를 파일로 저장해 `## Transcript` 부분만 읽는다. 키가 비어 있을 때만 `--no-whisper`(화면만으로 정리).
