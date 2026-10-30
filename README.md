@@ -2,9 +2,10 @@
 
 # youtube-to-notion
 
-> Notion 페이지에 유튜브 링크를 쌓아 두고, Claude Code에서 `/youtube-to-notion` 한 번이면 영상을 요약해 Notion 데이터베이스에 정리해 주는 Claude Code 스킬.
+> Notion 페이지에 유튜브·인스타그램 릴스 링크를 쌓아 두고, Claude Code에서 `/youtube-to-notion` 한 번이면 영상을 요약해 Notion 데이터베이스에 정리해 주는 Claude Code 스킬.
 
 - 자막이 있으면 자막으로, **자막이 없으면 Groq Whisper로 받아써서** 정리합니다.
+- **인스타그램 릴스도 지원합니다.** 짧은 영상에 맞춘 간단한 형식으로 정리하고, 썸네일은 만료되지 않도록 Notion에 직접 올립니다.
 - 영상마다 Notion 페이지 1개: 썸네일, 영상 정보, 한 줄 요약, 핵심 요약 표, 흐름별 섹션, 전체 구조 트리.
 - 채널·태그·분류는 기존 선택지를 재사용하고, 없으면 자동으로 추가합니다.
 - 처리한 링크는 '작업 대기 영상(URL)' 페이지에서 자동으로 체크(`- [x]`)되고, 실패한 영상은 다음 실행 때 다시 시도합니다.
@@ -56,7 +57,7 @@
 ## 동작 흐름
 
 ```
-Notion '작업 대기 영상(URL)' 페이지 (- [ ] 유튜브 링크)
+Notion '작업 대기 영상(URL)' 페이지 (- [ ] 유튜브·릴스 링크)
   → /youtube-to-notion
   → watch 스킬 (yt-dlp + ffmpeg): 자막·메타데이터, 자막 없으면 Groq Whisper
   → 요약 작성, 채널·태그·분류 결정
@@ -72,7 +73,7 @@ Notion '작업 대기 영상(URL)' 페이지 (- [ ] 유튜브 링크)
 | Notion 커넥터 | Claude 앱에서 Notion을 연결 |
 | [watch 스킬](https://github.com/bradautomates/claude-video) | 영상 다운로드·자막·받아쓰기를 담당하는 **필수 의존성** |
 | yt-dlp, ffmpeg | watch 스킬이 사용 (Windows는 `winget install yt-dlp.yt-dlp`, `winget install Gyan.FFmpeg`) |
-| Groq API 키 (선택) | 자막 없는 영상용. 없으면 화면 캡처만으로 정리 |
+| Groq API 키 (선택) | 자막 없는 영상·인스타그램 릴스용. 없으면 화면 캡처만으로 정리 |
 
 ## 설치
 
@@ -84,7 +85,7 @@ Claude Code에서 두 줄이면 됩니다 (Claude Code 2.1.275 이상).
 ```
 
 - 첫 줄은 필수 의존성인 [watch 스킬](https://github.com/bradautomates/claude-video)입니다. 설치 후 watch 안내에 따라 yt-dlp·ffmpeg를 준비하세요.
-- **(선택) Groq 키**: 자막 없는 영상용. [console.groq.com/keys](https://console.groq.com/keys)에서 키를 만들어 `~/.config/watch/.env`의 `GROQ_API_KEY=` 뒤에 붙여 넣습니다. **키를 대화창이나 저장소에 올리지 마세요.**
+- **(선택) Groq 키**: 자막 없는 영상·릴스용. [console.groq.com/keys](https://console.groq.com/keys)에서 키를 만들어 `~/.config/watch/.env`의 `GROQ_API_KEY=` 뒤에 붙여 넣습니다. **키를 대화창이나 저장소에 올리지 마세요.**
 
 <details>
 <summary>플러그인 없이 수동 설치</summary>
@@ -114,8 +115,8 @@ Claude Code에서 두 줄이면 됩니다 (Claude Code 2.1.275 이상).
 |------|------|------|
 | 이름 | 제목 | 영상 주제를 짧게 정리한 제목 |
 | 순번 | 숫자 | 1부터 자동 증가 (정렬 기준) |
-| 영상 제목 | 텍스트 | 유튜브 원제목 |
-| 채널 | 선택 | 유튜브 채널 |
+| 영상 제목 | 텍스트 | 유튜브 원제목 (릴스는 캡션 첫 줄) |
+| 채널 | 선택 | 유튜브 채널 / 릴스 작성자 계정 |
 | 설명 | 텍스트 | 한 줄 설명 |
 | 태그 | 다중 선택 | 영상 속 도구·기능·인물 |
 | 기록날짜 | 날짜 | 정리한 날 |
@@ -136,7 +137,8 @@ Claude Code에서:
 ## 참고와 주의
 
 - 영상 하나가 실패해도 나머지는 계속 처리합니다.
-- 자막이 없는 영상은 오디오가 Groq 서버로 전송됩니다.
+- 자막이 없는 영상과 릴스는 오디오가 Groq 서버로 전송됩니다.
+- 인스타그램은 로그인 없이 받을 수 있는 공개 릴스만 처리합니다.
 - 아주 긴 영상은 Groq 업로드 크기 제한에 걸릴 수 있습니다.
 - 요약은 한국어로 작성되도록 되어 있습니다. 다른 언어가 필요하면 `SKILL.md`의 "한국어로 작성" 줄을 바꾸세요.
 

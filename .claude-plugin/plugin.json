@@ -1,12 +1,12 @@
 {
   "name": "youtube-to-notion",
-  "version": "1.0.0",
-  "description": "Summarize YouTube videos queued on a Notion page into a Notion database. Uses captions, or Groq Whisper when there are none. Requires the watch plugin (bradautomates/claude-video).",
+  "version": "1.1.0",
+  "description": "Summarize YouTube videos and Instagram reels queued on a Notion page into a Notion database. Uses captions, or Groq Whisper when there are none. Requires the watch plugin (bradautomates/claude-video).",
   "author": {
     "name": "rsohyun"
   },
   "homepage": "https://github.com/rsohyun/youtube-to-notion",
   "repository": "https://github.com/rsohyun/youtube-to-notion",
   "license": "MIT",
-  "keywords": ["youtube", "notion", "summary", "transcription", "whisper", "korean", "study-notes"]
+  "keywords": ["youtube", "instagram", "reels", "notion", "summary", "transcription", "whisper", "korean", "study-notes"]
 }

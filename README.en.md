@@ -2,9 +2,10 @@
 
 # youtube-to-notion
 
-> A Claude Code skill: queue YouTube links on a Notion page, run `/youtube-to-notion`, and each video gets summarized into its own page in a Notion database.
+> A Claude Code skill: queue YouTube and Instagram reel links on a Notion page, run `/youtube-to-notion`, and each video gets summarized into its own page in a Notion database.
 
 - Uses captions when available; **transcribes with Groq Whisper when there are none**.
+- **Instagram reels are supported too**, with a shorter page format; the thumbnail is uploaded to Notion so it never expires.
 - One Notion page per video: thumbnail, video info, one-line summary, key-points table, section-by-section notes, and a structure tree.
 - Reuses existing channel / tag / category options and adds new ones when needed.
 - Processed links are checked off (`- [x]`) in the '작업 대기 영상(URL)' page; failed videos are retried on the next run.
@@ -64,7 +65,7 @@ The goal is to move beyond passive video consumption and build a personalized le
 ## How it works
 
 ```
-Notion '작업 대기 영상(URL)' (video queue) page (- [ ] YouTube link)
+Notion '작업 대기 영상(URL)' (video queue) page (- [ ] YouTube / reel link)
   → /youtube-to-notion
   → watch skill (yt-dlp + ffmpeg): captions + metadata, Groq Whisper if no captions
   → write summary, pick channel / tags / category
@@ -80,7 +81,7 @@ Notion '작업 대기 영상(URL)' (video queue) page (- [ ] YouTube link)
 | Notion connector | Connect Notion in the Claude app |
 | [watch skill](https://github.com/bradautomates/claude-video) | **Required dependency** for download, captions and transcription |
 | yt-dlp, ffmpeg | Used by watch (Windows: `winget install yt-dlp.yt-dlp`, `winget install Gyan.FFmpeg`) |
-| Groq API key (optional) | For videos without captions; otherwise frames only |
+| Groq API key (optional) | For videos without captions and Instagram reels; otherwise frames only |
 
 ## Install
 
@@ -92,7 +93,7 @@ Two lines in Claude Code (Claude Code 2.1.275 or later):
 ```
 
 - The first line installs the required [watch skill](https://github.com/bradautomates/claude-video). Follow its setup to get yt-dlp and ffmpeg.
-- **(Optional) Groq key** for videos without captions: create one at [console.groq.com/keys](https://console.groq.com/keys) and put it after `GROQ_API_KEY=` in `~/.config/watch/.env`. **Never paste the key into chat or commit it.**
+- **(Optional) Groq key** for videos without captions and reels: create one at [console.groq.com/keys](https://console.groq.com/keys) and put it after `GROQ_API_KEY=` in `~/.config/watch/.env`. **Never paste the key into chat or commit it.**
 
 <details>
 <summary>Manual install (without plugins)</summary>
@@ -122,8 +123,8 @@ Then queue links on the '작업 대기 영상(URL)' page as a checklist:
 |----------|------|---------|
 | 이름 | Title | Short topic name |
 | 순번 | Number | Auto-incrementing sequence (sort key) |
-| 영상 제목 | Text | Original video title |
-| 채널 | Select | YouTube channel |
+| 영상 제목 | Text | Original video title (reels: first caption line) |
+| 채널 | Select | YouTube channel / reel author |
 | 설명 | Text | One-line description |
 | 태그 | Multi-select | Tools / features / people in the video |
 | 기록날짜 | Date | Date recorded |
@@ -144,7 +145,8 @@ In Claude Code:
 ## Notes
 
 - One failed video doesn't stop the rest.
-- For videos without captions, audio is sent to Groq's servers.
+- For videos without captions and reels, audio is sent to Groq's servers.
+- Only public Instagram reels (downloadable without login) are supported.
 - Very long videos may hit Groq's upload size limit.
 
 ## Acknowledgements
